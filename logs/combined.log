@@ -1,3 +1,11 @@
 {"level":"info","message":"hello from aquisition","service":"aquisition-api","timestamp":"2026-04-05T05:22:46.157Z"}
 {"level":"info","message":"::1 - - [05/Apr/2026:05:22:46 +0000] \"GET / HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0\"","service":"aquisition-api","timestamp":"2026-04-05T05:22:46.178Z"}
 {"level":"info","message":"::1 - - [05/Apr/2026:05:22:46 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0\"","service":"aquisition-api","timestamp":"2026-04-05T05:22:46.321Z"}
+{"level":"info","message":"hello from aquisition","service":"aquisition-api","timestamp":"2026-04-07T05:02:52.997Z"}
+{"level":"info","message":"::1 - - [07/Apr/2026:05:02:53 +0000] \"GET / HTTP/1.1\" 200 21 \"-\" \"PostmanRuntime/7.52.0\"","service":"aquisition-api","timestamp":"2026-04-07T05:02:53.012Z"}
+{"level":"info","message":"::1 - - [07/Apr/2026:05:03:28 +0000] \"GET /api HTTP/1.1\" 500 1271 \"-\" \"PostmanRuntime/7.52.0\"","service":"aquisition-api","timestamp":"2026-04-07T05:03:28.474Z"}
+{"level":"info","message":"::1 - - [07/Apr/2026:05:13:33 +0000] \"GET /api HTTP/1.1\" 200 39 \"-\" \"PostmanRuntime/7.52.0\"","service":"aquisition-api","timestamp":"2026-04-07T05:13:33.291Z"}
+{"level":"info","message":"::1 - - [07/Apr/2026:05:13:42 +0000] \"GET /health HTTP/1.1\" 500 1271 \"-\" \"PostmanRuntime/7.52.0\"","service":"aquisition-api","timestamp":"2026-04-07T05:13:42.893Z"}
+{"level":"info","message":"::1 - - [07/Apr/2026:05:14:22 +0000] \"GET /health HTTP/1.1\" 500 1271 \"-\" \"PostmanRuntime/7.52.0\"","service":"aquisition-api","timestamp":"2026-04-07T05:14:22.095Z"}
+{"level":"info","message":"::1 - - [07/Apr/2026:05:14:51 +0000] \"GET /health HTTP/1.1\" 200 73 \"-\" \"PostmanRuntime/7.52.0\"","service":"aquisition-api","timestamp":"2026-04-07T05:14:51.411Z"}
+{"level":"info","message":"::1 - - [07/Apr/2026:05:15:52 +0000] \"POST /api/auth/sign-in HTTP/1.1\" 200 31 \"-\" \"PostmanRuntime/7.52.0\"","service":"aquisition-api","timestamp":"2026-04-07T05:15:52.683Z"}
