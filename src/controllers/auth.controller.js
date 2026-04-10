@@ -2,8 +2,10 @@ import { formatValidationError } from "#utils/format.js";
 import { signupSchema } from "#validations/auth.validation.js";
 import logger from "#config/logger.js";
 import { createUser } from "#services/auth.service.js";
-import{ jwttoken } from 'jsonwebtoken'
 import { cookies } from "#utils/cookies.js";
+// import pkg from 'jsonwebtoken';
+// const { sign } = pkg;
+import { jwttoken } from "#utils/jwt.js";
 
 export const signup = async(req, res, next) => {
   try {
