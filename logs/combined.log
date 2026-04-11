@@ -44,3 +44,6 @@
 {"level":"info","message":"User munna@gmail.com created ","service":"aquisition-api","timestamp":"2026-04-10T13:06:49.395Z"}
 {"level":"info","message":"user registered successfully munna@gmail.com","service":"aquisition-api","timestamp":"2026-04-10T13:06:49.410Z"}
 {"level":"info","message":"::1 - - [10/Apr/2026:13:06:49 +0000] \"POST /api/auth/sign-up HTTP/1.1\" 201 100 \"-\" \"PostmanRuntime/7.53.0\"","service":"aquisition-api","timestamp":"2026-04-10T13:06:49.415Z"}
+{"level":"info","message":"User mun@gmail.com created ","service":"aquisition-api","timestamp":"2026-04-10T13:23:45.178Z"}
+{"level":"info","message":"user registered successfully mun@gmail.com","service":"aquisition-api","timestamp":"2026-04-10T13:23:45.181Z"}
+{"level":"info","message":"::1 - - [10/Apr/2026:13:23:45 +0000] \"POST /api/auth/sign-up HTTP/1.1\" 201 96 \"-\" \"PostmanRuntime/7.53.0\"","service":"aquisition-api","timestamp":"2026-04-10T13:23:45.183Z"}
