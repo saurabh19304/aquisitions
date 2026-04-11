@@ -13,6 +13,15 @@ try {
 }
 }
 
+export const comparePassword = async(password, hashedPassword) => {
+  try {
+    return await bcrypt.compare(password, hashedPassword);
+  } catch (error) {
+    logger.error(`Error comparing password ${error}`);
+    throw new Error('error comparing password');
+  }
+}
+
 export const createUser = async({name, email, password, role = 'user'}) => {
   try {
     const existingUser = await db.select().from(users).where(eq(users.email, email)).limit(1);
@@ -31,6 +40,24 @@ export const createUser = async({name, email, password, role = 'user'}) => {
 
   } catch (error) {
     logger.error(`Error creating user ${error}`);
+    throw error;
+  }
+}
+
+export const authenticateUser = async(email, password) => {
+  try {
+    const existingUser = await db.select().from(users).where(eq(users.email, email)).limit(1);
+
+    if(existingUser.length === 0) throw new Error('User not found');
+
+    const user = existingUser[0];
+    const isPasswordValid = await comparePassword(password, user.password);
+
+    if(!isPasswordValid) throw new Error('Invalid credentials');
+
+    return user;
+  } catch (error) {
+    logger.error(`Error authenticating user ${error}`);
     throw error;
   }
 }
