@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.routes.js'
+import securityMiddleware from '#middleware/security.middleware.js';
 
 const app = express();
 
@@ -19,6 +20,8 @@ app.use(express.urlencoded({ extended: true })); //Parses form data submissions.
 app.use(cookieParser()); //Parses cookies from incoming requests and makes them available in req.cookies. Used for authentication — storing session tokens or JWT in cookies.
 
 app.use(morgan('combined', {stream: { write: (message) => logger.info(message.trim()) }})); //Every time someone makes a request to your API — Morgan automatically logs it without you writing any logging code manually.  By default Morgan writes to console.log. This stream option redirects Morgan's output into Winston instead — so all your logs go to the same place, same format, same files.
+
+app.use(securityMiddleware);   
 
 app.get('/', (req, res) => {
 
