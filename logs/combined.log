@@ -125,3 +125,5 @@
 {"level":"info","message":"::1 - - [12/Apr/2026:17:05:48 +0000] \"GET /health HTTP/1.1\" 200 75 \"-\" \"PostmanRuntime/7.53.0\"","service":"aquisition-api","timestamp":"2026-04-12T17:05:48.822Z"}
 {"level":"info","message":"::1 - - [12/Apr/2026:17:05:49 +0000] \"GET /health HTTP/1.1\" 200 75 \"-\" \"PostmanRuntime/7.53.0\"","service":"aquisition-api","timestamp":"2026-04-12T17:05:49.496Z"}
 {"level":"info","message":"::1 - - [12/Apr/2026:17:05:50 +0000] \"GET /health HTTP/1.1\" 200 75 \"-\" \"PostmanRuntime/7.53.0\"","service":"aquisition-api","timestamp":"2026-04-12T17:05:50.172Z"}
+{"ip":"::1","level":"warn","message":"Bot request blocked","path":"/health","service":"aquisition-api","timestamp":"2026-04-12T17:12:14.484Z","userAgent":"PostmanRuntime/7.53.0"}
+{"level":"info","message":"::1 - - [12/Apr/2026:17:12:14 +0000] \"GET /health HTTP/1.1\" 403 69 \"-\" \"PostmanRuntime/7.53.0\"","service":"aquisition-api","timestamp":"2026-04-12T17:12:14.497Z"}
