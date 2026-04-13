@@ -46,7 +46,7 @@ const securityMiddleware = async ( req, res, next) => {
        return res.status(403).json({error: 'forbidden', message: 'too many request'});
     }
 
-next();
+ next();
 
   } catch (error) {
      console.error('Arcjet middleware error', error);
