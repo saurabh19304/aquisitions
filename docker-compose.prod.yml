@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: .
+      target: production
+    container_name: aquisitions-app-prod
+    env_file:
+      - .env.production
+    env_file:
+      - .env.production
+    ports:
+      - "3000:3000"
+    command: npm start

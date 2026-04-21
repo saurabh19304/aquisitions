@@ -127,3 +127,6 @@
 {"level":"info","message":"::1 - - [12/Apr/2026:17:05:50 +0000] \"GET /health HTTP/1.1\" 200 75 \"-\" \"PostmanRuntime/7.53.0\"","service":"aquisition-api","timestamp":"2026-04-12T17:05:50.172Z"}
 {"ip":"::1","level":"warn","message":"Bot request blocked","path":"/health","service":"aquisition-api","timestamp":"2026-04-12T17:12:14.484Z","userAgent":"PostmanRuntime/7.53.0"}
 {"level":"info","message":"::1 - - [12/Apr/2026:17:12:14 +0000] \"GET /health HTTP/1.1\" 403 69 \"-\" \"PostmanRuntime/7.53.0\"","service":"aquisition-api","timestamp":"2026-04-12T17:12:14.497Z"}
+{"level":"info","message":"hello from aquisition","service":"aquisition-api","timestamp":"2026-04-21T07:23:10.505Z"}
+{"level":"info","message":"::ffff:172.20.0.1 - - [21/Apr/2026:07:23:10 +0000] \"GET / HTTP/1.1\" 200 21 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0\"","service":"aquisition-api","timestamp":"2026-04-21T07:23:10.519Z"}
+{"level":"info","message":"::ffff:172.20.0.1 - - [21/Apr/2026:07:23:10 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0\"","service":"aquisition-api","timestamp":"2026-04-21T07:23:10.912Z"}
