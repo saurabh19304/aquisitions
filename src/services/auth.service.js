@@ -42,8 +42,8 @@ export const createUser = async({name, email, password, role = 'user'}) => {
     logger.error(`Error creating user ${error}`);
     throw error;
   }
-}
 
+}
 export const authenticateUser = async(email, password) => {
   try {
     const existingUser = await db.select().from(users).where(eq(users.email, email)).limit(1);
