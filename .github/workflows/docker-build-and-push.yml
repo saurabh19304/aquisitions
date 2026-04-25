@@ -10,7 +10,7 @@ jobs:
     name: Build and Push Production Image
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: ${{ format('{0}/aquisitions', secrets.DOCKER_USERNAME || github.repository_owner) }}
+      IMAGE_NAME: ${{ format('{0}/Aquisitions', secrets.DOCKER_USERNAME || github.repository_owner) }}
 
     steps:
       - name: Checkout
