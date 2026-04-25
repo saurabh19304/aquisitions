@@ -61,7 +61,7 @@ jobs:
         shell: bash
         run: |
           if [ -f prettier-report.txt ]; then
-            node -e 'const fs=require("fs");const lines=fs.readFileSync("prettier-report.txt","utf8").split(/\r?\n/);let count=0;for(const line of lines){const match=line.match(/^\[warn\]\s+(.+)$/);if(!match)continue;const file=match[1].trim();if(file.startsWith("Code style issues found"))continue;count+=1;console.log("::warning file="+file+",line=1,col=1::Prettier formatting issue detected. Fix: run npm run format");}if(count===0){console.log("No Prettier issues detected.");}'
+            node -e 'const fs=require("fs");const lines=fs.readFileSync("prettier-report.txt","utf8").split(/\r?\n/);let count=0;for(const line of lines){const warnMatch=line.match(/^\[warn\]\s+(.+)$/);if(warnMatch){const file=warnMatch[1].trim();if(!file.startsWith("Code style issues found")){count+=1;console.log("::warning file="+file+",line=1,col=1::Prettier formatting issue detected. Fix: run npm run format");}continue;}const errMatch=line.match(/^\[error\]\s+([^:]+):\s+(.+)$/);if(errMatch){count+=1;console.log("::error file="+errMatch[1].trim()+",line=1,col=1::Prettier parse error: "+errMatch[2].trim());}}if(count===0){console.log("No Prettier issues detected.");}'
           else
             echo "::warning::prettier-report.txt was not found."
           fi
@@ -75,7 +75,13 @@ jobs:
 
           if [ "$LINT_EXIT" != "0" ] || [ "$PRETTIER_EXIT" != "0" ]; then
             echo "Lint and/or format checks failed."
+            echo "LINT_EXIT=$LINT_EXIT"
+            echo "PRETTIER_EXIT=$PRETTIER_EXIT"
             echo "Run npm run lint:fix and npm run format to resolve issues."
+            if [ -f prettier-report.txt ]; then
+              echo "Recent Prettier output:"
+              tail -n 50 prettier-report.txt
+            fi
             exit 1
           fi
 
