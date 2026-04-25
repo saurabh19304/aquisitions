@@ -9,8 +9,6 @@ jobs:
   docker:
     name: Build and Push Production Image
     runs-on: ubuntu-latest
-    env:
-      IMAGE_NAME: ${{ format('{0}/Aquisitions', secrets.DOCKER_USERNAME || github.repository_owner) }}
 
     steps:
       - name: Checkout
@@ -45,7 +43,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.IMAGE_NAME }}
+          images: ${{ secrets.DOCKER_USERNAME }}/aquisitions
           tags: |
             type=ref,event=branch
             type=sha,format=short
@@ -70,7 +68,7 @@ jobs:
         run: |
           {
             echo "## Docker Publish Summary"
-            echo "- Image: ${{ env.IMAGE_NAME }}"
+            echo "- Image: ${{ secrets.DOCKER_USERNAME }}/aquisitions"
             echo "- Digest: ${{ steps.build.outputs.digest }}"
             echo "- Tags:"
             printf '%s\n' "${{ steps.meta.outputs.tags }}" | while IFS= read -r tag; do
