@@ -3,7 +3,7 @@ services:
     image: neondatabase/neon_local:latest
     container_name: neon-local
     ports:
-      - "5432:5432"
+      - '5432:5432'
     env_file:
       - .env.development
 
@@ -17,7 +17,7 @@ services:
     env_file:
       - .env.development
     ports:
-      - "3000:3000"
+      - '3000:3000'
     volumes:
       - ./:/app
       - /app/node_modules

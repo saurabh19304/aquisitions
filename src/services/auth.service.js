@@ -1,15 +1,15 @@
-import { db } from "#config/database.js";
-import logger from "#config/logger.js";
-import { users } from "#models/user.model.js";
-import bcrypt from "bcrypt";
-import { eq } from "drizzle-orm";
+import { db } from '#config/database.js';
+import logger from '#config/logger.js';
+import { users } from '#models/user.model.js';
+import bcrypt from 'bcrypt';
+import { eq } from 'drizzle-orm';
 
-export const hashPassword = async (password) => {
+export const hashPassword = async password => {
   try {
     return await bcrypt.hash(password, 10);
   } catch (error) {
     logger.error(`Error hashing the password ${error}`);
-    throw new Error("error hashing");
+    throw new Error('error hashing', { cause: error });
   }
 };
 
@@ -18,11 +18,11 @@ export const comparePassword = async (password, hashedPassword) => {
     return await bcrypt.compare(password, hashedPassword);
   } catch (error) {
     logger.error(`Error comparing password ${error}`);
-    throw new Error("error comparing password");
+    throw new Error('error comparing password', { cause: error });
   }
 };
 
-export const createUser = async ({ name, email, password, role = "user" }) => {
+export const createUser = async ({ name, email, password, role = 'user' }) => {
   try {
     const existingUser = await db
       .select()
@@ -31,7 +31,7 @@ export const createUser = async ({ name, email, password, role = "user" }) => {
       .limit(1);
 
     if (existingUser.length > 0)
-      throw new Error("User with this email already exist");
+      throw new Error('User with this email already exist');
 
     const password_hash = await hashPassword(password);
 
@@ -61,12 +61,12 @@ export const authenticateUser = async (email, password) => {
       .where(eq(users.email, email))
       .limit(1);
 
-    if (existingUser.length === 0) throw new Error("User not found");
+    if (existingUser.length === 0) throw new Error('User not found');
 
     const user = existingUser[0];
     const isPasswordValid = await comparePassword(password, user.password);
 
-    if (!isPasswordValid) throw new Error("Invalid credentials");
+    if (!isPasswordValid) throw new Error('Invalid credentials');
 
     return user;
   } catch (error) {

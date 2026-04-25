@@ -1,8 +1,8 @@
-import { db } from "#config/database.js";
-import logger from "#config/logger.js";
-import { users } from "#models/user.model.js";
-import { eq } from "drizzle-orm";
-import { hashPassword } from "#services/auth.service.js";
+import { db } from '#config/database.js';
+import logger from '#config/logger.js';
+import { users } from '#models/user.model.js';
+import { eq } from 'drizzle-orm';
+import { hashPassword } from '#services/auth.service.js';
 
 export const getAllUsers = async () => {
   try {
@@ -17,12 +17,12 @@ export const getAllUsers = async () => {
       })
       .from(users);
   } catch (error) {
-    logger.error("error getting the users", error);
+    logger.error('error getting the users', error);
     throw error;
   }
 };
 
-export const getUserById = async (id) => {
+export const getUserById = async id => {
   try {
     const [user] = await db
       .select({
@@ -38,12 +38,12 @@ export const getUserById = async (id) => {
       .limit(1);
 
     if (!user) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     return user;
   } catch (error) {
-    logger.error("error getting user by id", error);
+    logger.error('error getting user by id', error);
     throw error;
   }
 };
@@ -57,7 +57,7 @@ export const updateUser = async (id, updates) => {
       .limit(1);
 
     if (!existingUser) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     const payload = { ...updates };
@@ -84,12 +84,12 @@ export const updateUser = async (id, updates) => {
 
     return updatedUser;
   } catch (error) {
-    logger.error("error updating user", error);
+    logger.error('error updating user', error);
     throw error;
   }
 };
 
-export const deleteUser = async (id) => {
+export const deleteUser = async id => {
   try {
     const [existingUser] = await db
       .select({ id: users.id })
@@ -98,7 +98,7 @@ export const deleteUser = async (id) => {
       .limit(1);
 
     if (!existingUser) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     const [deletedUser] = await db
@@ -113,7 +113,7 @@ export const deleteUser = async (id) => {
 
     return deletedUser;
   } catch (error) {
-    logger.error("error deleting user", error);
+    logger.error('error deleting user', error);
     throw error;
   }
 };
