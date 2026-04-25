@@ -40,7 +40,29 @@ jobs:
         shell: bash
         run: |
           if [ -f eslint-report.json ]; then
-            node -e "const fs=require('fs');const report=JSON.parse(fs.readFileSync('eslint-report.json','utf8'));let count=0;for(const file of report){for(const msg of file.messages||[]){count+=1;const line=msg.line||1;const col=msg.column||1;const sev=msg.severity===2?'error':'warning';const rule=msg.ruleId?` (${msg.ruleId})`:'';const text=`${msg.message}${rule}. Fix: run npm run lint:fix`;const safe=text.replace(/\r?\n/g,' ');console.log(`::${sev} file=${file.filePath},line=${line},col=${col}::${safe}`);}}if(count===0){console.log('No ESLint issues detected.');}"
+            node <<'NODE'
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('eslint-report.json', 'utf8'));
+
+            let count = 0;
+
+            for (const file of report) {
+              for (const msg of file.messages || []) {
+                count += 1;
+                const line = msg.line || 1;
+                const col = msg.column || 1;
+                const sev = msg.severity === 2 ? 'error' : 'warning';
+                const rule = msg.ruleId ? ' (' + msg.ruleId + ')' : '';
+                const safe = (msg.message + rule + '. Fix: run npm run lint:fix').replace(/\r?\n/g, ' ');
+
+                console.log('::' + sev + ' file=' + file.filePath + ',line=' + line + ',col=' + col + '::' + safe);
+              }
+            }
+
+            if (count === 0) {
+              console.log('No ESLint issues detected.');
+            }
+            NODE
           else
             echo "::warning::eslint-report.json was not found."
           fi
@@ -61,7 +83,27 @@ jobs:
         shell: bash
         run: |
           if [ -f prettier-report.txt ]; then
-            node -e "const fs=require('fs');const txt=fs.readFileSync('prettier-report.txt','utf8');const lines=txt.split(/\r?\n/);let count=0;for(const l of lines){const m=l.match(/^\[warn\]\s+(.+)$/);if(!m)continue;const file=m[1].trim();if(file.startsWith('Code style issues found'))continue;count+=1;console.log(`::warning file=${file},line=1,col=1::Prettier formatting issue detected. Fix: run npm run format`);}if(count===0){console.log('No Prettier issues detected.');}"
+            node <<'NODE'
+            const fs = require('fs');
+            const lines = fs.readFileSync('prettier-report.txt', 'utf8').split(/\r?\n/);
+
+            let count = 0;
+
+            for (const line of lines) {
+              const match = line.match(/^\[warn\]\s+(.+)$/);
+              if (!match) continue;
+
+              const file = match[1].trim();
+              if (file.startsWith('Code style issues found')) continue;
+
+              count += 1;
+              console.log('::warning file=' + file + ',line=1,col=1::Prettier formatting issue detected. Fix: run npm run format');
+            }
+
+            if (count === 0) {
+              console.log('No Prettier issues detected.');
+            }
+            NODE
           else
             echo "::warning::prettier-report.txt was not found."
           fi

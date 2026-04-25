@@ -44,9 +44,35 @@ jobs:
         shell: bash
         run: |
           if [ -f jest-results.json ]; then
-            node -e "const fs=require('fs');const r=JSON.parse(fs.readFileSync('jest-results.json','utf8'));let failures=0;for(const tr of r.testResults||[]){for(const ar of tr.assertionResults||[]){if(ar.status!=='failed')continue;failures+=1;const msg=(ar.failureMessages&&ar.failureMessages[0]?ar.failureMessages[0]:`Test failed: ${ar.fullName||ar.title}`).replace(/\r?\n/g,' ').slice(0,1000);console.log(`::error file=${tr.name},line=1,col=1::${msg}`);}}if(failures===0){console.log('No test failure annotations to report.');}"
+            node <<'NODE'
+            const fs = require('fs');
+            const results = JSON.parse(fs.readFileSync('jest-results.json', 'utf8'));
+
+            let failures = 0;
+
+            for (const testFile of results.testResults || []) {
+              for (const assertion of testFile.assertionResults || []) {
+                if (assertion.status !== 'failed') continue;
+
+                failures += 1;
+                const message = ((assertion.failureMessages && assertion.failureMessages[0]) ? assertion.failureMessages[0] : 'Test failed: ' + (assertion.fullName || assertion.title))
+                  .replace(/\r?\n/g, ' ')
+                  .slice(0, 1000);
+
+                console.log('::error file=' + testFile.name + ',line=1,col=1::' + message);
+              }
+            }
+
+            if (failures === 0) {
+              console.log('No test failure annotations to report.');
+            }
+            NODE
           elif [ -f test-output.txt ]; then
-            node -e "const fs=require('fs');const txt=fs.readFileSync('test-output.txt','utf8').split(/\r?\n/).slice(-40).join(' | ');console.log(`::error::Tests failed before JSON results were generated. ${txt.slice(0,1200)}`);"
+            node <<'NODE'
+            const fs = require('fs');
+            const txt = fs.readFileSync('test-output.txt', 'utf8').split(/\r?\n/).slice(-40).join(' | ');
+            console.log('::error::Tests failed before JSON results were generated. ' + txt.slice(0, 1200));
+            NODE
           else
             echo "::warning::No test output found for annotation."
           fi
@@ -58,7 +84,28 @@ jobs:
           {
             echo "## Test Run Summary"
             if [ -f jest-results.json ]; then
-              node -e "const fs=require('fs');const r=JSON.parse(fs.readFileSync('jest-results.json','utf8'));const total=r.numTotalTests??0;const passed=r.numPassedTests??0;const failed=r.numFailedTests??0;const suitesPassed=r.numPassedTestSuites??0;const suitesFailed=r.numFailedTestSuites??0;const covPath='coverage/coverage-summary.json';let covLine='Coverage summary not available.';if(fs.existsSync(covPath)){const cov=JSON.parse(fs.readFileSync(covPath,'utf8'));if(cov.total&&cov.total.lines){covLine=`Line coverage: ${cov.total.lines.pct}%`}}console.log(`- Test suites: ${suitesPassed} passed, ${suitesFailed} failed`);console.log(`- Tests: ${passed} passed, ${failed} failed, ${total} total`);console.log(`- ${covLine}`);"
+              node <<'NODE'
+              const fs = require('fs');
+              const results = JSON.parse(fs.readFileSync('jest-results.json', 'utf8'));
+              const total = results.numTotalTests || 0;
+              const passed = results.numPassedTests || 0;
+              const failed = results.numFailedTests || 0;
+              const suitesPassed = results.numPassedTestSuites || 0;
+              const suitesFailed = results.numFailedTestSuites || 0;
+              const covPath = 'coverage/coverage-summary.json';
+              let covLine = 'Coverage summary not available.';
+
+              if (fs.existsSync(covPath)) {
+                const cov = JSON.parse(fs.readFileSync(covPath, 'utf8'));
+                if (cov.total && cov.total.lines) {
+                  covLine = 'Line coverage: ' + cov.total.lines.pct + '%';
+                }
+              }
+
+              console.log('- Test suites: ' + suitesPassed + ' passed, ' + suitesFailed + ' failed');
+              console.log('- Tests: ' + passed + ' passed, ' + failed + ' failed, ' + total + ' total');
+              console.log('- ' + covLine);
+              NODE
             else
               echo "- Test results file was not generated."
             fi

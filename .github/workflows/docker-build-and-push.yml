@@ -9,10 +9,20 @@ jobs:
   docker:
     name: Build and Push Production Image
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: ${{ format('{0}/aquisitions', secrets.DOCKER_USERNAME || github.repository_owner) }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate Docker Hub secrets
+        shell: bash
+        run: |
+          if [ -z "${{ secrets.DOCKER_USERNAME }}" ] || [ -z "${{ secrets.DOCKER_PASSWORD }}" ]; then
+            echo "::error::DOCKER_USERNAME and DOCKER_PASSWORD secrets must be configured for Docker publishing."
+            exit 1
+          fi
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -35,7 +45,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKER_USERNAME }}/aquisitions
+          images: ${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
             type=sha,format=short
@@ -60,12 +70,10 @@ jobs:
         run: |
           {
             echo "## Docker Publish Summary"
-            echo "- Image: ${{ secrets.DOCKER_USERNAME }}/aquisitions"
+            echo "- Image: ${{ env.IMAGE_NAME }}"
             echo "- Digest: ${{ steps.build.outputs.digest }}"
             echo "- Tags:"
-            while IFS= read -r tag; do
+            printf '%s\n' "${{ steps.meta.outputs.tags }}" | while IFS= read -r tag; do
               [ -n "$tag" ] && echo "  - $tag"
-            done << 'EOF'
-            ${{ steps.meta.outputs.tags }}
-            EOF
+            done
           } >> "$GITHUB_STEP_SUMMARY"
