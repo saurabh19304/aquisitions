@@ -38,24 +38,22 @@ const getActorFromRequest = (req) => {
   }
 };
 
- export const fetchAllUsers = async (req, res, next) => {
+export const fetchAllUsers = async (req, res, next) => {
   try {
-    
-    logger.info('getting all users...');
+    logger.info("getting all users...");
 
     const allUsers = await getAllUsers();
 
     res.json({
-      message: 'seccessfulyl retrieved the users',
+      message: "seccessfulyl retrieved the users",
       users: allUsers,
-      count: allUsers.length
-    })
-
+      count: allUsers.length,
+    });
   } catch (error) {
     logger.error(error);
-    next(error)
+    next(error);
   }
- }
+};
 
 export const getUserById = async (req, res, next) => {
   try {

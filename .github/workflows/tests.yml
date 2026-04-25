@@ -1,0 +1,86 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+    branches: [main, staging]
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      NODE_OPTIONS: --experimental-vm-modules
+      DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/aquisitions_test' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests with coverage
+        id: tests
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          npm test -- --ci --coverage --json --outputFile=jest-results.json > test-output.txt 2>&1
+          EXIT_CODE=$?
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Annotate test failures
+        if: always()
+        shell: bash
+        run: |
+          if [ -f jest-results.json ]; then
+            node -e "const fs=require('fs');const r=JSON.parse(fs.readFileSync('jest-results.json','utf8'));let failures=0;for(const tr of r.testResults||[]){for(const ar of tr.assertionResults||[]){if(ar.status!=='failed')continue;failures+=1;const msg=(ar.failureMessages&&ar.failureMessages[0]?ar.failureMessages[0]:`Test failed: ${ar.fullName||ar.title}`).replace(/\r?\n/g,' ').slice(0,1000);console.log(`::error file=${tr.name},line=1,col=1::${msg}`);}}if(failures===0){console.log('No test failure annotations to report.');}"
+          elif [ -f test-output.txt ]; then
+            node -e "const fs=require('fs');const txt=fs.readFileSync('test-output.txt','utf8').split(/\r?\n/).slice(-40).join(' | ');console.log(`::error::Tests failed before JSON results were generated. ${txt.slice(0,1200)}`);"
+          else
+            echo "::warning::No test output found for annotation."
+          fi
+
+      - name: Write test summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Test Run Summary"
+            if [ -f jest-results.json ]; then
+              node -e "const fs=require('fs');const r=JSON.parse(fs.readFileSync('jest-results.json','utf8'));const total=r.numTotalTests??0;const passed=r.numPassedTests??0;const failed=r.numFailedTests??0;const suitesPassed=r.numPassedTestSuites??0;const suitesFailed=r.numFailedTestSuites??0;const covPath='coverage/coverage-summary.json';let covLine='Coverage summary not available.';if(fs.existsSync(covPath)){const cov=JSON.parse(fs.readFileSync(covPath,'utf8'));if(cov.total&&cov.total.lines){covLine=`Line coverage: ${cov.total.lines.pct}%`}}console.log(`- Test suites: ${suitesPassed} passed, ${suitesFailed} failed`);console.log(`- Tests: ${passed} passed, ${failed} failed, ${total} total`);console.log(`- ${covLine}`);"
+            else
+              echo "- Test results file was not generated."
+            fi
+
+            if [ "${{ steps.tests.outputs.exit_code }}" = "0" ]; then
+              echo "- Status: Passed"
+            else
+              echo "- Status: Failed"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Fail workflow when tests fail
+        if: always() && steps.tests.outputs.exit_code != '0'
+        run: |
+          echo "Tests failed. Check annotations and summary for details."
+          exit 1

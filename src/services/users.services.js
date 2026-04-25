@@ -6,19 +6,21 @@ import { hashPassword } from "#services/auth.service.js";
 
 export const getAllUsers = async () => {
   try {
-     return await db.select({
-      id: users.id,
-      name: users.name,
-      email: users.email,
-      role: users.role,
-      created_at: users.created_at,
-      updated_at: users.updated_at
-    }).from(users)
+    return await db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        role: users.role,
+        created_at: users.created_at,
+        updated_at: users.updated_at,
+      })
+      .from(users);
   } catch (error) {
-    logger.error('error getting the users', error);
+    logger.error("error getting the users", error);
     throw error;
   }
-}
+};
 
 export const getUserById = async (id) => {
   try {

@@ -1,0 +1,82 @@
+name: Lint and Format
+
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+    branches: [main, staging]
+
+jobs:
+  lint-and-format:
+    name: Lint and Prettier Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        id: lint
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          npm run lint -- --format json --output-file eslint-report.json
+          EXIT_CODE=$?
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Annotate ESLint issues
+        if: always()
+        shell: bash
+        run: |
+          if [ -f eslint-report.json ]; then
+            node -e "const fs=require('fs');const report=JSON.parse(fs.readFileSync('eslint-report.json','utf8'));let count=0;for(const file of report){for(const msg of file.messages||[]){count+=1;const line=msg.line||1;const col=msg.column||1;const sev=msg.severity===2?'error':'warning';const rule=msg.ruleId?` (${msg.ruleId})`:'';const text=`${msg.message}${rule}. Fix: run npm run lint:fix`;const safe=text.replace(/\r?\n/g,' ');console.log(`::${sev} file=${file.filePath},line=${line},col=${col}::${safe}`);}}if(count===0){console.log('No ESLint issues detected.');}"
+          else
+            echo "::warning::eslint-report.json was not found."
+          fi
+
+      - name: Run Prettier check
+        id: prettier
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          npm run format:check > prettier-report.txt 2>&1
+          EXIT_CODE=$?
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Annotate Prettier issues
+        if: always()
+        shell: bash
+        run: |
+          if [ -f prettier-report.txt ]; then
+            node -e "const fs=require('fs');const txt=fs.readFileSync('prettier-report.txt','utf8');const lines=txt.split(/\r?\n/);let count=0;for(const l of lines){const m=l.match(/^\[warn\]\s+(.+)$/);if(!m)continue;const file=m[1].trim();if(file.startsWith('Code style issues found'))continue;count+=1;console.log(`::warning file=${file},line=1,col=1::Prettier formatting issue detected. Fix: run npm run format`);}if(count===0){console.log('No Prettier issues detected.');}"
+          else
+            echo "::warning::prettier-report.txt was not found."
+          fi
+
+      - name: Fail if lint/format issues exist
+        if: always()
+        shell: bash
+        run: |
+          LINT_EXIT="${{ steps.lint.outputs.exit_code }}"
+          PRETTIER_EXIT="${{ steps.prettier.outputs.exit_code }}"
+
+          if [ "$LINT_EXIT" != "0" ] || [ "$PRETTIER_EXIT" != "0" ]; then
+            echo "Lint and/or format checks failed."
+            echo "Run npm run lint:fix and npm run format to resolve issues."
+            exit 1
+          fi
+
+          echo "Lint and format checks passed."

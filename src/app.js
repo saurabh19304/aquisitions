@@ -1,16 +1,16 @@
-import express from 'express';
-import logger from '#config/logger.js';
+import express from "express";
+import logger from "#config/logger.js";
 import helmet from "helmet";
-import morgan from 'morgan';
-import cors from 'cors'
-import cookieParser from 'cookie-parser';
-import authRoutes from './routes/auth.routes.js'
-import securityMiddleware from '#middleware/security.middleware.js';
-import userRoutes from './routes/user.routes.js'
+import morgan from "morgan";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import authRoutes from "./routes/auth.routes.js";
+import securityMiddleware from "#middleware/security.middleware.js";
+import userRoutes from "./routes/user.routes.js";
 
 const app = express();
 
-app.use(helmet());  //Adds security HTTP headers automatically. Protects against common attacks like clickjacking, XSS, and sniffing attacks. One line gives you 15+ security headers for free.
+app.use(helmet()); //Adds security HTTP headers automatically. Protects against common attacks like clickjacking, XSS, and sniffing attacks. One line gives you 15+ security headers for free.
 
 app.use(cors()); //Cross Origin Resource Sharing — allows your API to accept requests from different domains.Without it:Frontend on localhost:3000 → calls API on localhost:5000 → BLOCKED by browser
 
@@ -20,31 +20,36 @@ app.use(express.urlencoded({ extended: true })); //Parses form data submissions.
 
 app.use(cookieParser()); //Parses cookies from incoming requests and makes them available in req.cookies. Used for authentication — storing session tokens or JWT in cookies.
 
-app.use(morgan('combined', {stream: { write: (message) => logger.info(message.trim()) }})); //Every time someone makes a request to your API — Morgan automatically logs it without you writing any logging code manually.  By default Morgan writes to console.log. This stream option redirects Morgan's output into Winston instead — so all your logs go to the same place, same format, same files.
+app.use(
+  morgan("combined", {
+    stream: { write: (message) => logger.info(message.trim()) },
+  }),
+); //Every time someone makes a request to your API — Morgan automatically logs it without you writing any logging code manually.  By default Morgan writes to console.log. This stream option redirects Morgan's output into Winston instead — so all your logs go to the same place, same format, same files.
 
-app.use(securityMiddleware);   
+app.use(securityMiddleware);
 
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
+  logger.info("hello from aquisition");
 
- logger.info('hello from aquisition')
-
-  res.status(200).send('hello from aquisition');
+  res.status(200).send("hello from aquisition");
 });
 
-app.get('/health', (req, res) => {
-  res.status(200).json({ status:'ok', timestamp: new Date().toISOString(), uptime: process.uptime() })  //process is a node.js available without importing  global object and the uptime is its method which can tell the seconds node.js server is up
-});
-
-app.get('/api', (req, res)=> {
+app.get("/health", (req, res) => {
   res.status(200).json({
-    message: 'aquisition api is running'
-  })
-})
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  }); //process is a node.js available without importing  global object and the uptime is its method which can tell the seconds node.js server is up
+});
 
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use((req, res) => [
-  res.status(404).json({ message: 'route not found'})
-])
+app.get("/api", (req, res) => {
+  res.status(200).json({
+    message: "aquisition api is running",
+  });
+});
+
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use((req, res) => [res.status(404).json({ message: "route not found" })]);
 
 export default app;
