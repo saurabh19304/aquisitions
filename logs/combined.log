@@ -130,3 +130,9 @@
 {"level":"info","message":"hello from aquisition","service":"aquisition-api","timestamp":"2026-04-21T07:23:10.505Z"}
 {"level":"info","message":"::ffff:172.20.0.1 - - [21/Apr/2026:07:23:10 +0000] \"GET / HTTP/1.1\" 200 21 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0\"","service":"aquisition-api","timestamp":"2026-04-21T07:23:10.519Z"}
 {"level":"info","message":"::ffff:172.20.0.1 - - [21/Apr/2026:07:23:10 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0\"","service":"aquisition-api","timestamp":"2026-04-21T07:23:10.912Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Apr/2026:07:25:32 +0000] \"GET /health HTTP/1.1\" 200 73 \"-\" \"-\"","service":"aquisition-api","timestamp":"2026-04-25T07:25:32.557Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Apr/2026:07:25:32 +0000] \"GET /api HTTP/1.1\" 200 39 \"-\" \"-\"","service":"aquisition-api","timestamp":"2026-04-25T07:25:32.620Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Apr/2026:07:25:32 +0000] \"GET /nonexistent HTTP/1.1\" 404 29 \"-\" \"-\"","service":"aquisition-api","timestamp":"2026-04-25T07:25:32.670Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Apr/2026:07:31:19 +0000] \"GET /health HTTP/1.1\" 200 73 \"-\" \"-\"","service":"aquisition-api","timestamp":"2026-04-25T07:31:19.421Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Apr/2026:07:31:19 +0000] \"GET /api HTTP/1.1\" 200 39 \"-\" \"-\"","service":"aquisition-api","timestamp":"2026-04-25T07:31:19.478Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Apr/2026:07:31:19 +0000] \"GET /nonexistent HTTP/1.1\" 404 29 \"-\" \"-\"","service":"aquisition-api","timestamp":"2026-04-25T07:31:19.523Z"}
